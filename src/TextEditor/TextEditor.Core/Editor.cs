@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.AccessControl;
 
 namespace TextEditor.Core
 {
@@ -24,12 +25,23 @@ namespace TextEditor.Core
             _count = _lines.Count;
         }
 
-        public void Save()
+        public void Do(IUserCommand command)
+        {
+            switch (command)
+            {
+                case AddLineCommand cmd: AddLine(cmd.Text, cmd.Position); break;
+                case RemoveLineCommand cmd: RemoveLine(cmd.Position); break;
+                case SaveCommand _: Save(); break;
+                case QuitCommand _: Dispose(); break;
+            }
+        }
+
+        private void Save()
         {
             throw new NotImplementedException();
         }
 
-        public void AddLine(string text, int position)
+        private void AddLine(string text, int position)
         {
             var line = GetNodeAtIndex(position);
             ITextLine newLine = new AddedTextLine(text);
@@ -37,7 +49,7 @@ namespace TextEditor.Core
             _count++;
         }
 
-        public void RemoveLine(int position)
+        private void RemoveLine(int position)
         {
             var line = GetNodeAtIndex(position);
             _lines.Remove(line);

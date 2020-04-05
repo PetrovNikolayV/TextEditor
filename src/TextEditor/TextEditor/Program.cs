@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using TextEditor.Core;
 
@@ -34,9 +33,35 @@ namespace TextEditor
                     Console.WriteLine($"Unable to open file {fileName}");
                 }
                 watch.Stop();
-            }
 
-            Console.ReadKey();
+                while (true)
+                {
+                    Console.Write("Enter next command: ");
+                    var command = Console.ReadLine();
+                    IUserCommand cmd = CommandParser.Parse(command);
+                    if (cmd == null)
+                    {
+                        Console.WriteLine("Unknown command. Try again...");
+                        continue;
+                    }
+
+                    if (cmd is QuitCommand)
+                    {
+                        break;
+                    }
+
+                    try
+                    {
+                        editor.Do(cmd);
+                        Console.WriteLine(cmd.SucceedMessage);
+                    }
+                    catch
+                    {
+                        Console.WriteLine(cmd.FailMessage);
+                    }
+                    
+                }
+            }
         }
     }
 }
