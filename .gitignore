@@ -3,3 +3,6 @@ src/TextEditor/TextEditor/bin/
 src/TextEditor/TextEditor/obj/
 src/TextEditor/TextEditor.Core/bin/
 src/TextEditor/TextEditor.Core/obj/
+src/TextEditor/TextEditor.Core.Tests/bin/
+src/TextEditor/TextEditor.Core.Tests/obj/
+src/TextEditor/packages/

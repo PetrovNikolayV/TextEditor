@@ -1,6 +1,6 @@
-﻿namespace TextEditor.Core
+﻿namespace TextEditor.Core.Commands
 {
-    public class AddLineCommand : IUserCommand
+    internal class AddLineCommand : IUserCommand
     {
         public int Position { get; set; }
         public string Text { get; set; }

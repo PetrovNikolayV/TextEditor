@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using TextEditor.Core.Commands;
 
 namespace TextEditor.Core
 {
     public class Editor
     {
+        private readonly byte[] nextLineSymbols = new byte[] {0x0D, 0x0A};
         private readonly Stream _sourceStream;
         private readonly Stream _saveOperationStream;
         
@@ -56,7 +59,7 @@ namespace TextEditor.Core
                 node = node.Next;
                 if (node != null)
                 {
-                    _saveOperationStream.WriteByte(0x0A);
+                    _saveOperationStream.Write(nextLineSymbols,0,nextLineSymbols.Length);
                 }
             }
 
@@ -71,7 +74,7 @@ namespace TextEditor.Core
         private void AddLine(string text, int position)
         {
             var bytes = Encoding.UTF8.GetBytes(text);
-            StreamTextLine newLine = new StreamTextLine(bytes);
+            StreamTextLine newLine = new StreamTextLine(bytes.ToArray());
 
             if (position == _count)
             {

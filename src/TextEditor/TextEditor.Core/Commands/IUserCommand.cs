@@ -1,4 +1,4 @@
-﻿namespace TextEditor.Core
+﻿namespace TextEditor.Core.Commands
 {
     public interface IUserCommand
     {

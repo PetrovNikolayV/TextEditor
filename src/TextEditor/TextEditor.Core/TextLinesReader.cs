@@ -4,7 +4,7 @@ using System.IO;
 
 namespace TextEditor.Core
 {
-    public class TextLinesReader
+    class TextLinesReader
     {
         private readonly Stream _stream;
 
@@ -38,7 +38,7 @@ namespace TextEditor.Core
                     offset++;
                     if (buffer[i] == 0x0A)
                     {
-                        StreamTextLine line = new StreamTextLine(_stream,position,offset-1);
+                        StreamTextLine line = new StreamTextLine(_stream,position,offset-2); //Ignore 0x0D0A
                         position += offset;
                         offset = 0;
                         result.AddLast(line);

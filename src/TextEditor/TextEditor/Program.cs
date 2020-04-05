@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using TextEditor.Core;
+using TextEditor.Core.Commands;
 
 namespace TextEditor
 {
@@ -9,17 +11,18 @@ namespace TextEditor
     {
         static void Main(string[] args)
         {
-            var fileName = "small_example.txt";//args.FirstOrDefault();
-            var saveOperationFile = fileName + ".tmp";
-
+            var fileName = args.FirstOrDefault();
+            
             if (string.IsNullOrEmpty(fileName))
             {
                 Console.WriteLine("You should specify file name.");
                 return;
             }
 
-            if (!OpenStreams(fileName, saveOperationFile, out FileStream sourceStream,
-                out FileStream saveOperationsStream))
+            var saveOperationFileName = fileName + ".tmp";
+
+            if (!OpenStreams(fileName, saveOperationFileName, 
+                out FileStream sourceStream, out FileStream saveOperationsStream))
             {
                 return;
             }
@@ -29,7 +32,7 @@ namespace TextEditor
             {
                 sourceStream.Dispose();
                 saveOperationsStream.Dispose();
-                File.Delete(saveOperationFile);
+                TryDeleteFile(saveOperationFileName);
                 return;
             }
            
@@ -62,10 +65,26 @@ namespace TextEditor
 
             sourceStream.Dispose();
             saveOperationsStream.Dispose();
-            File.Delete(saveOperationFile);
+            TryDeleteFile(saveOperationFileName);
         }
 
-        private static bool OpenStreams(string fileName, string saveOperationFile, out FileStream sourceStream, out FileStream saveOperationsStream)
+        private static void TryDeleteFile(string fileName)
+        {
+            try
+            {
+                File.Delete(fileName);
+            }
+            catch
+            {
+                Console.WriteLine($"Unable to delete file {fileName}");
+            }
+        }
+
+        private static bool OpenStreams(
+            string fileName, 
+            string saveOperationFile, 
+            out FileStream sourceStream, 
+            out FileStream saveOperationsStream)
         {
             sourceStream = saveOperationsStream = null;
             try
@@ -80,7 +99,7 @@ namespace TextEditor
 
             try
             {
-                saveOperationsStream = new FileStream(saveOperationFile, FileMode.Open);
+                saveOperationsStream = new FileStream(saveOperationFile, FileMode.Create);
             }
             catch
             {

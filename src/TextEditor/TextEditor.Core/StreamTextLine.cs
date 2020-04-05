@@ -3,7 +3,7 @@ using System.IO;
 
 namespace TextEditor.Core
 {
-    public class StreamTextLine
+    class StreamTextLine
     {
         private byte[] _data;
         private Stream _sourceStream;

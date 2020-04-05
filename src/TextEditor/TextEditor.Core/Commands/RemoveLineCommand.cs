@@ -1,6 +1,6 @@
-﻿namespace TextEditor.Core
+﻿namespace TextEditor.Core.Commands
 {
-    public class RemoveLineCommand : IUserCommand
+    class RemoveLineCommand : IUserCommand
     {
         public int Position { get; set; }
         public string SucceedMessage => $"Line number {Position} has been successfully removed";

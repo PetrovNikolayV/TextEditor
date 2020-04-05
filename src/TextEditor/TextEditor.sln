@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextEditor", "TextEditor\Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextEditor.Core", "TextEditor.Core\TextEditor.Core.csproj", "{3B4FF94A-E2A1-4478-A636-0A820EA02B66}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextEditor.Core.Tests", "TextEditor.Core.Tests\TextEditor.Core.Tests.csproj", "{1D46BBCD-5097-4F64-B025-7AA87A204D4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{3B4FF94A-E2A1-4478-A636-0A820EA02B66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B4FF94A-E2A1-4478-A636-0A820EA02B66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B4FF94A-E2A1-4478-A636-0A820EA02B66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D46BBCD-5097-4F64-B025-7AA87A204D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D46BBCD-5097-4F64-B025-7AA87A204D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D46BBCD-5097-4F64-B025-7AA87A204D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D46BBCD-5097-4F64-B025-7AA87A204D4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
