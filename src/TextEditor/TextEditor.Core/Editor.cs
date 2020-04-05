@@ -1,25 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace TextEditor.Core
 {
-    public class Editor : IDisposable
+    public class Editor
     {
-        private readonly string _fileName;
+        private readonly Stream _sourceStream;
+        private readonly Stream _saveOperationStream;
         
-        private LinkedList<ITextLine> _lines;
-        private int _count;
-        private Stream _sourceStream;
-
-        public Editor(string fileName)
+        private LinkedList<StreamTextLine> _lines;
+        private int _count = -1;
+        private bool _isChanged = false;
+        
+        public Editor(Stream sourceStream, Stream saveOperationStream)
         {
-            _fileName = fileName;
+            _sourceStream = sourceStream ?? throw new ArgumentNullException(nameof(sourceStream));
+            _saveOperationStream = saveOperationStream ?? throw new ArgumentNullException(nameof(saveOperationStream));
         }
 
-        public void Open()
+        public void Read()
         {
-            _sourceStream = new FileStream(_fileName, FileMode.Open);
             _lines = new TextLinesReader(_sourceStream).ReadLines();
             _count = _lines.Count;
         }
@@ -31,34 +33,57 @@ namespace TextEditor.Core
                 case AddLineCommand cmd: AddLine(cmd.Text, cmd.Position); break;
                 case RemoveLineCommand cmd: RemoveLine(cmd.Position); break;
                 case SaveCommand _: Save(); break;
-                case QuitCommand _: Dispose(); break;
             }
         }
 
         private void Save()
         {
-            string copyFileName = _fileName + ".tmp";
-            _sourceStream.Position = 0;
-            using (FileStream outputStream = new FileStream(copyFileName, FileMode.Create))
+            if (!_isChanged)
             {
-                foreach (ITextLine textLine in _lines)
+                return;
+            }
+
+            _sourceStream.Position = 0;
+            _saveOperationStream.SetLength(0);
+
+            var node = _lines.First;
+            while (node != null)
+            {
+                byte[] toWrite = node.Value.GetData();
+                long pos = _saveOperationStream.Position;
+                _saveOperationStream.Write(toWrite, 0, toWrite.Length);
+                node.Value.SetPositionInStream(_sourceStream, pos, toWrite.Length);
+                node = node.Next;
+                if (node != null)
                 {
-                    byte[] toWrite = textLine.GetData();
-                    outputStream.Write(toWrite,0,toWrite.Length);
+                    _saveOperationStream.WriteByte(0x0A);
                 }
             }
 
-            _sourceStream.Dispose();
-            File.Delete(_fileName);
-            File.Move(copyFileName, _fileName);
+            _sourceStream.Position = 0;
+            _sourceStream.SetLength(0);
+            _saveOperationStream.Position = 0;
+            _saveOperationStream.CopyTo(_sourceStream);
+            _sourceStream.Position = 0;
+            _isChanged = false;
         }
 
         private void AddLine(string text, int position)
         {
+            var bytes = Encoding.UTF8.GetBytes(text);
+            StreamTextLine newLine = new StreamTextLine(bytes);
+
+            if (position == _count)
+            {
+                _lines.AddLast(newLine);
+                _count++;
+                _isChanged = true;
+                return;
+            }
             var line = GetNodeAtIndex(position);
-            ITextLine newLine = new AddedTextLine(text);
             _lines.AddBefore(line, newLine);
             _count++;
+            _isChanged = true;
         }
 
         private void RemoveLine(int position)
@@ -66,16 +91,17 @@ namespace TextEditor.Core
             var line = GetNodeAtIndex(position);
             _lines.Remove(line);
             _count--;
+            _isChanged = true;
         }
 
-        private LinkedListNode<ITextLine> GetNodeAtIndex(int index)
+        private LinkedListNode<StreamTextLine> GetNodeAtIndex(int index)
         {
             if (index < 0 || index >= _count)
             {
                 throw new ArgumentOutOfRangeException();
             }
 
-            LinkedListNode<ITextLine> result = _lines.First;
+            LinkedListNode<StreamTextLine> result = _lines.First;
             if (result == null)
             {
                 throw new ArgumentOutOfRangeException();
@@ -88,11 +114,6 @@ namespace TextEditor.Core
             }
 
             return result;
-        }
-
-        public void Dispose()
-        {
-            _sourceStream?.Dispose();
         }
     }
 }

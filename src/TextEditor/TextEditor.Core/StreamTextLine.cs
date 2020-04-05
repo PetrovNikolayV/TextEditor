@@ -3,21 +3,38 @@ using System.IO;
 
 namespace TextEditor.Core
 {
-    public class SourceTextLine :ITextLine
+    public class StreamTextLine
     {
-        private readonly Stream _sourceStream;
-        private readonly long _position;
-        private readonly int _length;
+        private byte[] _data;
+        private Stream _sourceStream;
+        private long _position;
+        private int _length;
 
-        public SourceTextLine(Stream sourceStream, long position, int length)
+        public StreamTextLine(Stream sourceStream, long position, int length)
         {
             _sourceStream = sourceStream;
             _position = position;
             _length = length;
         }
 
+        public StreamTextLine(byte[] data)
+        {
+            _data = data ?? throw new ArgumentNullException(nameof(data));
+        }
+
+        public void SetPositionInStream(Stream sourceStream, long position, int length)
+        {
+            _sourceStream = sourceStream;
+            _position = position;
+            _length = length;
+            _data = null;
+        }
+
         public byte[] GetData()
         {
+            if (_data != null)
+                return _data;
+
             if (_sourceStream.Position > _position)
             {
                 throw new Exception("Current stream position is bigger than requested position");

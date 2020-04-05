@@ -41,19 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddedTextLine.cs" />
     <Compile Include="AddLineCommand.cs" />
     <Compile Include="CommandParser.cs" />
     <Compile Include="Editor.cs" />
-    <Compile Include="ITextLine.cs" />
     <Compile Include="IUserCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuitCommand.cs" />
     <Compile Include="RemoveLineCommand.cs" />
     <Compile Include="SaveCommand.cs" />
-    <Compile Include="SourceTextLine.cs" />
+    <Compile Include="StreamTextLine.cs" />
     <Compile Include="TextLinesReader.cs" />
-    <Compile Include="TextLinesWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

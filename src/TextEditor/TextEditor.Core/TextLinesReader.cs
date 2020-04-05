@@ -13,9 +13,9 @@ namespace TextEditor.Core
             _stream = stream ?? throw new ArgumentNullException(nameof(stream));
         }
 
-        public LinkedList<ITextLine> ReadLines()
+        public LinkedList<StreamTextLine> ReadLines()
         {
-            LinkedList<ITextLine> result = new LinkedList<ITextLine>();
+            LinkedList<StreamTextLine> result = new LinkedList<StreamTextLine>();
             byte[] buffer = new byte[100000];
 
             long position = 0;
@@ -27,7 +27,7 @@ namespace TextEditor.Core
                 {
                     if (offset != 0)
                     {
-                        SourceTextLine line = new SourceTextLine(_stream, position, offset);
+                        StreamTextLine line = new StreamTextLine(_stream, position, offset);
                         result.AddLast(line);
                     }
                     break;
@@ -38,7 +38,7 @@ namespace TextEditor.Core
                     offset++;
                     if (buffer[i] == 0x0A)
                     {
-                        SourceTextLine line = new SourceTextLine(_stream,position,offset);
+                        StreamTextLine line = new StreamTextLine(_stream,position,offset-1);
                         position += offset;
                         offset = 0;
                         result.AddLast(line);
