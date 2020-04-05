@@ -9,13 +9,13 @@ namespace TextEditor.Core
 {
     public class Editor
     {
-        private readonly byte[] nextLineSymbols = new byte[] {0x0D, 0x0A};
+        private readonly byte[] _nextLineSymbols = new byte[] {0x0D, 0x0A};
         private readonly Stream _sourceStream;
         private readonly Stream _saveOperationStream;
         
         private LinkedList<StreamTextLine> _lines;
         private int _count = -1;
-        private bool _isChanged = false;
+        private bool _isChanged;
         
         public Editor(Stream sourceStream, Stream saveOperationStream)
         {
@@ -59,7 +59,7 @@ namespace TextEditor.Core
                 node = node.Next;
                 if (node != null)
                 {
-                    _saveOperationStream.Write(nextLineSymbols,0,nextLineSymbols.Length);
+                    _saveOperationStream.Write(_nextLineSymbols,0,_nextLineSymbols.Length);
                 }
             }
 

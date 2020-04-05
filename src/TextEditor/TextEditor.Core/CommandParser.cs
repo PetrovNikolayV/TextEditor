@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices.WindowsRuntime;
 using TextEditor.Core.Commands;
 
 namespace TextEditor.Core
