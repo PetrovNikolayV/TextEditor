@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.AccessControl;
 
 namespace TextEditor.Core
 {
@@ -38,7 +37,20 @@ namespace TextEditor.Core
 
         private void Save()
         {
-            throw new NotImplementedException();
+            string copyFileName = _fileName + ".tmp";
+            _sourceStream.Position = 0;
+            using (FileStream outputStream = new FileStream(copyFileName, FileMode.Create))
+            {
+                foreach (ITextLine textLine in _lines)
+                {
+                    byte[] toWrite = textLine.GetData();
+                    outputStream.Write(toWrite,0,toWrite.Length);
+                }
+            }
+
+            _sourceStream.Dispose();
+            File.Delete(_fileName);
+            File.Move(copyFileName, _fileName);
         }
 
         private void AddLine(string text, int position)
